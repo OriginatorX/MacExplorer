@@ -1,0 +1,10 @@
+# Catalogs
+node_modules
+macs
+.vscode
+lib
+config
+
+# Files
+*.log
+*.lock

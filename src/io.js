@@ -29,8 +29,17 @@ export class Book {
     }
 
     addEntry(entry, sheetName) {
-        this.#insertions.push([entry.id, entry.val])
+        this.#insertions.push([entry.id, entry.mac, entry.vendor])
         if (this.#sheetRows.length === this.#insertions.length) {
+            this.#insertions.sort((a, b) => {
+                if (a[0] < b[0]) {
+                    return -1
+                }
+                if (a[0] > b[0]) {
+                    return 1
+                }
+                return 0
+            })
             const workSheet = XlSX.utils.aoa_to_sheet(this.#insertions)
             XlSX.utils.book_append_sheet(this.#workBook, workSheet, sheetName)
             XlSX.writeFile(this.#workBook, this.#workBookFile)

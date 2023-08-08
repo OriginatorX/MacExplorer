@@ -6,22 +6,25 @@ import { API, argsHandle } from './src/utils.js'
 (function app() {
 
     try {
-        const { file: fileName, sheet: sheetName } = argsHandle(process.argv)
+        const { 
+            file: fileName, 
+            sheet: sheetName,
+            newSheet: newSheetName
+        } = argsHandle(process.argv)
 
-        const newSheetName = 'Vendor'
         const apiClient = API()
         const book = new Book(fileName)
         const rows = book.rowsFromSheet(sheetName)
 
-        book.addEntry({id: 'Mac-address', val: 'Vendor'}, newSheetName)
+        book.addEntry({id: 0, mac: 'Mac-address', vendor: 'Vendor'}, newSheetName)
         
         let timeSkip = 100
         for (let i = 1; i < rows.length; i++) {
            setTimeout(function vendorResolve(idx) {
                 apiClient.getMacInfo(rows[idx], (json) => {
-                    const entry = {id: rows[idx], val: json['macInfo']['company']}
+                    const entry = {id: idx, mac: rows[idx], vendor: json['macInfo']['company']}
                     this.addEntry(entry, newSheetName)
-                    console.log(`# ${idx}: ${entry.id} - ${entry.val}`)
+                    console.log(`# ${entry.id}: ${entry.mac} - ${entry.vendor}`)
                 })
             }.bind(book, i), timeSkip += 100)
         }    

@@ -5,11 +5,12 @@ import { parseArgs } from 'node:util'
 import config from 'config'
 
 export function API(key) {
-    if (key) {
-        new APIClient(key)
+    if (key !== undefined && typeof key === 'string') {
+        return new APIClient(key)
     } else if (config.has('apiKey')) {
         return new APIClient(config.get('apiKey'))
     } else {
+        console.log("\nWARNING: Client is running without the API key\n")
         return new APIClient()
     }
 }
@@ -32,6 +33,10 @@ export function argsHandle(args) {
         sheet: {
             type: 'string',
             short: 's'
+        },
+        newSheet: {
+            type: 'string',
+            short: 'n'
         }
     }
     const { values } = parseArgs({ args, options, allowPositionals: true })
